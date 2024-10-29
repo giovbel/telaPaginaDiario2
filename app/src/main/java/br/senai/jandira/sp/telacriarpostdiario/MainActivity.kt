@@ -125,9 +125,16 @@ fun telacriar() {
                     TextField(
                         value = title,
                         onValueChange = { setTitle(it) },
-                        label = { Text("Título") },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().height(60.dp)
                     )
+                }
+                Card(
+                    modifier = Modifier
+                        .width(330.dp)
+                        .height(300.dp),
+                    colors = CardDefaults.cardColors(Color(0xFFE4EFFF)),
+                ){
+
                 }
             }
 
