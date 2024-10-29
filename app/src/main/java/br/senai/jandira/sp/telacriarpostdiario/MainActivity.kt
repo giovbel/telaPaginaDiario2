@@ -7,10 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,13 +29,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,9 +61,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun telacriar() {
 
-  var  (title, setTitle) = remember {
-      mutableStateOf("")
-  }
+    var title by remember { mutableStateOf("Título") }
+    var isTitleFocused by remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -112,33 +117,71 @@ fun telacriar() {
             }
 
         }
-        Box(
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ){
+        Column(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+        ) {
             Card(
                 modifier = Modifier
                     .width(350.dp)
-                    .height(570.dp),
+                    .height(570.dp)
+                    .align(Alignment.CenterHorizontally),
                 colors = CardDefaults.cardColors(Color(0xFFC1DBFF)),
             ) {
-                Card {
-                    TextField(
-                        value = title,
-                        onValueChange = { setTitle(it) },
-                        modifier = Modifier.fillMaxWidth().height(60.dp)
-                    )
-                }
+
+
                 Card(
                     modifier = Modifier
                         .width(330.dp)
-                        .height(300.dp),
-                    colors = CardDefaults.cardColors(Color(0xFFE4EFFF)),
-                ){
+                        .height(60.dp)
+                        .align(Alignment.CenterHorizontally),
+                ) {
+                    TextField(
+                        value = title,
+                        onValueChange = {
+                            title = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .onFocusChanged { focusState ->
+                                if (focusState.isFocused && title == "Título") {
+                                    title = "" // Limpa o texto quando o campo recebe o foco
+                                }
+                                isTitleFocused = focusState.isFocused
+                            },
+                        placeholder = {
+                            if (!isTitleFocused && title.isEmpty()) {
+                                Text(text = "Título", color = Color.Gray) // Placeholder como "Título"
+                            }
+                        },
+                        textStyle = TextStyle(color = Color.Black),
+                        singleLine = true
+                    )
+                }
 
+
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .width(330.dp)
+                                .height(300.dp),
+                            colors = CardDefaults.cardColors(Color(0xFFE4EFFF)),
+                        ) {
+
+                        }
+                    }
                 }
             }
-
         }
+
 
         Box(
             modifier = Modifier
