@@ -25,9 +25,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +48,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.telacriarpostdiario.ui.theme.TelaCriarPostDiarioTheme
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +68,8 @@ class MainActivity : ComponentActivity() {
 fun telacriar() {
 
     var title by remember { mutableStateOf("Título") }
-    var isTitleFocused by remember { mutableStateOf(false) }
+    var isFocused by remember { mutableStateOf(false) }
+    val currentDate = SimpleDateFormat("dd/MM/yy", Locale.getDefault()).format(Date())
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -128,36 +135,42 @@ fun telacriar() {
                 colors = CardDefaults.cardColors(Color(0xFFC1DBFF)),
             ) {
 
-
-                Card(
+                Row(
                     modifier = Modifier
-                        .width(330.dp)
-                        .height(60.dp)
-                        .align(Alignment.CenterHorizontally),
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextField(
-                        value = title,
-                        onValueChange = {
-                            title = it
-                        },
+                        value = if (isFocused && title == "Título") "" else title, // Limpa o texto se em foco e "Título"
+                        onValueChange = { title = it },
+                        textStyle = LocalTextStyle.current.copy(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        ),
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .weight(1f)
                             .onFocusChanged { focusState ->
-                                if (focusState.isFocused && title == "Título") {
-                                    title = "" // Limpa o texto quando o campo recebe o foco
-                                }
-                                isTitleFocused = focusState.isFocused
-                            },
-                        placeholder = {
-                            if (!isTitleFocused && title.isEmpty()) {
-                                Text(text = "Título", color = Color.Gray) // Placeholder como "Título"
+                                isFocused = focusState.isFocused // Atualiza o estado de foco
                             }
-                        },
-                        textStyle = TextStyle(color = Color.Black),
-                        singleLine = true
+                            .background(Color.Transparent), // Define o fundo como transparente
+                        singleLine = true,
+                        colors = TextFieldDefaults.colors(
+                            focusedIndicatorColor = Color.Transparent, // Remove a linha de foco
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            errorIndicatorColor = Color.Transparent,
+                        )
+                    )
+
+                    Text(
+                        text = currentDate,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
-
 
                 Box(
                     modifier = Modifier.fillMaxSize()
