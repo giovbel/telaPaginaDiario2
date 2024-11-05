@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -67,6 +68,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun telacriar() {
 
+
+    val conteudo by remember { mutableStateOf("") }
     var title by remember { mutableStateOf("Título") }
     var isFocused by remember { mutableStateOf(false) }
     val currentDate = SimpleDateFormat("dd/MM/yy", Locale.getDefault()).format(Date())
@@ -108,7 +111,7 @@ fun telacriar() {
                         .width(60.dp)
                 )
                 Text(
-                    text = "CRIAR",
+                    text = "CRIAR PÁGINA",
                     fontSize = 20.sp,
                     color = Color.White,
                     fontWeight = FontWeight.Medium
@@ -143,27 +146,27 @@ fun telacriar() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextField(
-                        value = if (isFocused && title == "Título") "" else title, // Limpa o texto se em foco e "Título"
+                        value = if (isFocused && title == "Título") "" else title,
                         onValueChange = { title = it },
                         textStyle = LocalTextStyle.current.copy(
-                            fontSize = 24.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         ),
                         modifier = Modifier
                             .weight(1f)
                             .onFocusChanged { focusState ->
-                                isFocused = focusState.isFocused // Atualiza o estado de foco
-                            }
-                            .background(Color.Transparent), // Define o fundo como transparente
+                                isFocused = focusState.isFocused
+                            },
                         singleLine = true,
                         colors = TextFieldDefaults.colors(
-                            focusedIndicatorColor = Color.Transparent, // Remove a linha de foco
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent,
-                            errorIndicatorColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,   // Remove a linha de foco
+                            unfocusedIndicatorColor = Color.Transparent, // Remove a linha sem foco
+                            disabledIndicatorColor = Color.Transparent,  // Remove a linha desabilitada
+                            errorIndicatorColor = Color.Transparent      // Remove a linha de erro
                         )
                     )
+
 
                     Text(
                         text = currentDate,
@@ -188,7 +191,19 @@ fun telacriar() {
                                 .height(300.dp),
                             colors = CardDefaults.cardColors(Color(0xFFE4EFFF)),
                         ) {
-
+                            BasicTextField(
+                                value = conteudo,
+                                onValueChange = { },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.Transparent),
+                                decorationBox = { innerTextField ->
+                                    if (conteudo.isEmpty()) {
+                                        Text("Cada página em branco é uma oportunidade de se expressar. Vamos começar?", color = Color.Gray)
+                                    }
+                                    innerTextField()
+                                }
+                            )
                         }
                     }
                 }
